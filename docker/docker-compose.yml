@@ -1,0 +1,15 @@
+version: "3"
+services:
+  ubuntu:
+    container_name: ubuntu
+    image: java:8
+    restart: on-failure
+    command: ["sh","run.sh"]
+    ports:
+      - "9092:9092"
+      - "2181:2181"
+      - "9021:9021"
+      - "8083:8083"
+    volumes:
+      - ./confluent-7.0.1:/confluent-7.0.1
+      - ./run.sh:/run.sh

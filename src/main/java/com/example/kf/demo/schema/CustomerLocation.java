@@ -28,4 +28,7 @@ public class CustomerLocation extends Customer {
 
     @JsonProperty
     private Integer region;
+
+    @JsonProperty
+    private Double discount;
 }

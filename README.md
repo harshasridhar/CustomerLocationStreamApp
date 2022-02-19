@@ -64,6 +64,19 @@ For OutsideNode
 </tr>
 </table>
 
+For Mall Node
+<table>
+<tr>
+  <th>Direction</th><th>Probablity</th><th>CumulativeProbablity</th>
+</tr>
+<tr>
+  <td>Same</td><td>0.6</td><td>0.60</td>
+</tr>
+<tr>
+  <td>Random Node - [2,4,6,8]</td><td>0.4</td><td>1.0</td>
+</tr>
+</table>
+
 ![](images/StateTransitions.png)
 
 Strategy:<br/>

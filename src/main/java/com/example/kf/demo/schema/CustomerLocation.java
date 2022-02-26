@@ -18,7 +18,7 @@ public class CustomerLocation extends Customer {
 //    private Integer customerId;
 
     @JsonProperty
-    private Timestamp timestamp;
+    private String timestamp;
 
 //    @JsonProperty
 //    private Double latitude;

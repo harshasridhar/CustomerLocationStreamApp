@@ -1,4 +1,7 @@
 from random import random, randint
+from datetime import datetime, date
+from confluent_kafka import Producer
+from time import sleep
 
 
 def is_direct_node(node):
@@ -11,6 +14,12 @@ def is_direct_node(node):
 def get_next_node(current):
     random_number = random()
     # print(random_number)
+
+    if current == -1:
+        if random_number <= 0.4:
+            return 2*randint(1, 4)
+        else:
+            return current
 
     if current == 0:
         if random_number <= 0.4:
@@ -40,35 +49,20 @@ def get_next_node(current):
             return current + 1 if current != 8 else 1
 
 
+producer = Producer({'bootstrap.servers': 'localhost:9092'})
+customer_location = {i: randint(0, 8) for i in range(1, 201)}
 count = 0
-current = randint(0,8)
-print(current, end=" ")
-while count < 20:
+while count < 2000:
+    customer_id = randint(1, 200)
+    current = customer_location[customer_id]
     current = get_next_node(current)
-    print(current, end=" ")
-    if current == -1:
-        break
+    customer_location[customer_id] = current
+    message= {'CustomerID': customer_id, 'region': current, 'timestamp': str(datetime.now())}
+    print(str(message))
+    producer.produce("customer-location", key=str(customer_id), value=str(message))
+    sleep(0.1)
+    if customer_id % 10 == 0:
+        producer.flush()
+        sleep(0.5)
     count += 1
-'''
-
-curl \
-    -i -X PUT -H "Accept:application/json" \
-    -H  "Content-Type:application/json" http://localhost:8083/connectors/source-csv-filepulse-00/config \
-    -d '{
-        "connector.class":"io.streamthoughts.kafka.connect.filepulse.source.FilePulseSourceConnector",
-        "fs.scan.directory.path":"/tmp/kafka-connect/examples/",
-        "fs.scan.interval.ms":"10000",
-     "fs.scan.filters":"io.streamthoughts.kafka.connect.filepulse.scanner.local.filter.RegexFileListFilter",
-        "file.filter.regex.pattern":".*\\.csv$",
-        "task.reader.class": "io.streamthoughts.kafka.connect.filepulse.reader.RowFileInputReader",
-        "offset.strategy":"name",
-        "skip.headers": "1",
-        "topic":"customer-data",
-        "internal.kafka.reporter.bootstrap.servers": "broker:29092",
-        "internal.kafka.reporter.topic":"connect-file-pulse-status",
-        "fs.cleanup.policy.class": "io.streamthoughts.kafka.connect.filepulse.clean.LogCleanupPolicy",
-        "tasks.max": 1
-    }'
-
-
-'''
+producer.flush()

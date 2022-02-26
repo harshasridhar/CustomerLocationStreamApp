@@ -16,6 +16,9 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 //confluent-hub install confluentinc/kafka-connect-jdbc:latest
+
+//kafka-console-producer --bootstrap-server localhost:9092 --topic customer-location --property "parse.key=true" --property "key.separator=:"
+//confluent local services connect connector status JdbcSinkConnectorConnector_0
 public class StreamsApp {
 
     private static final Logger logger = LoggerFactory.getLogger(StreamsApp.class);
@@ -30,11 +33,11 @@ public class StreamsApp {
      */
     @PostConstruct
     public static void init(){
-        centroid0 = new Customer(null, "Female",43,55L,49, "",null);//med-income med-spenders
-        centroid1 = new Customer(null, "Female",45,25L,20, "",null);//Low-income low-spenders
-        centroid2 = new Customer(null, "Female",32,86L,82, "",null);//High-income high-spenders
+        centroid0 = new Customer(null, "Female",45,25L,20, "",null);//Low-income low-spenders
+        centroid1 = new Customer(null, "Female",25,26L,78, "",null);//low-income high-spenders
+        centroid2 = new Customer(null, "Female",43,55L,49, "",null);//med-income med-spenders
         centroid3 = new Customer(null, "Female",40,87L,17, "",null);//High-income low-spenders
-        centroid4 = new Customer(null, "Female",25,26L,78, "",null);//low-income high-spenders
+        centroid4 = new Customer(null, "Female",32,86L,82, "",null);//High-income high-spenders
     }
 
     private static Double getDistance(Customer customer, Customer centroid){
@@ -64,8 +67,8 @@ public class StreamsApp {
             case 3: discount = 20; break;
             case 4: discount = 25; break;
         }
-        logger.info("{} - {} => {} : {}",customerLocation.getCustomerID(), distances, clusterId, discount);
-        return new Random().nextDouble() * 100;
+        logger.info("Customer {} offered {}% discount",customerLocation.getCustomerID(), discount);
+        return discount;
     }
 
     private static Topology getTopology(){

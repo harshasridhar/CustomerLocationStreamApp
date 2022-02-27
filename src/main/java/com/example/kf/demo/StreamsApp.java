@@ -100,12 +100,15 @@ public class StreamsApp {
                             location.setAnnualIncome(customer.getAnnualIncome());
                             location.setSpendingScore(customer.getSpendingScore());
                             location.setGender(customer.getGender());
-
-                            CustomerEntity customerEntity = new CustomerEntity();
-                            BeanUtils.copyProperties(location, customerEntity);
-                            customerEntity.setLastSeenRegion(location.getRegion());
-                            customer.setUpdateTime(new Timestamp(System.currentTimeMillis()).toString());
-                            customerRepository.save(customerEntity);
+                            try {
+                                CustomerEntity customerEntity = new CustomerEntity();
+                                BeanUtils.copyProperties(location, customerEntity);
+                                customerEntity.setLastSeenRegion(location.getRegion());
+                                customerEntity.setUpdateTime(new Timestamp(System.currentTimeMillis()).toString());
+                                customerRepository.save(customerEntity);
+                            }catch (Exception ex){
+                                logger.error("Exception occurred while saving entity {}",location,ex);
+                            }
                             return location;
                         })
                     .to("customer-enriched",Produced.with(Serdes.String(), CustomerSerde.customerLocationSerde()));

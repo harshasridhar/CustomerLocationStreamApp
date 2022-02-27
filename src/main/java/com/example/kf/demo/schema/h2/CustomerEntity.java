@@ -9,7 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "customer_location")
+@Table(name = "customer_enriched")
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class CustomerEntity {
 

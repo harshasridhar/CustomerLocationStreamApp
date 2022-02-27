@@ -30,5 +30,5 @@ public class CustomerLocation extends Customer {
     private Integer region;
 
     @JsonProperty
-    private Double discount;
+    private String offer;
 }
